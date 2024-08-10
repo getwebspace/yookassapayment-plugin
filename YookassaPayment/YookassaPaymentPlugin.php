@@ -15,7 +15,7 @@ class YookassaPaymentPlugin extends AbstractPaymentPlugin
     const NAME = 'YookassaPaymentPlugin';
     const TITLE = 'YookassaPayment';
     const DESCRIPTION = 'Возможность принимать безналичную оплату товаров и услуг';
-    const VERSION = '1.0.0';
+    const VERSION = '1.0.1';
 
     public function __construct(ContainerInterface $container)
     {
@@ -121,9 +121,7 @@ class YookassaPaymentPlugin extends AbstractPaymentPlugin
             ],
             'confirmation' => [
                 'type' => 'redirect',
-                //'return_url' => $this->parameter('common_homepage') . 'cart/done/yk/result?serial=' . $order->serial,
-                'return_url' => 'https://ruspie.farm.u4et.ru/cart/done/yk/result?serial=' . $order->serial,
-                //'return_url' => $this->parameter('common_homepage') . '/cart/done/' . $order->serial,
+                'return_url' => $this->parameter('common_homepage') . 'cart/done/yk/result?serial=' . $order->serial,
                 'locale' => 'ru_RU',
             ],
             'receipt' => $receipt,
