@@ -3,6 +3,7 @@
 namespace Plugin\YookassaPayment\Actions;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
+use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
 use Plugin\YookassaPayment\YookassaPaymentPlugin;
 
 class ResultAction extends CatalogAction
@@ -23,10 +24,14 @@ class ResultAction extends CatalogAction
             /** @var YookassaPaymentPlugin $tp */
             $tp = $this->container->get('YookassaPaymentPlugin');
 
-            $result = $tp->request('GET', 'payments/' . $order->system);
+            if ($order->system) {
+                $result = $tp->request('GET', 'payments/' . $order->system);
 
-            if ($result && !empty($result['status']) && ($result['status'] == 'succeeded' || $result['status'] == 'waiting_for_capture')) {
-                $this->container->get(\App\Application\PubSub::class)->publish('plugin:order:payment', $order);
+                if ($result && !empty($result['status']) && ($result['status'] == 'succeeded' || $result['status'] == 'waiting_for_capture')) {
+                    $this->container->get(\App\Application\PubSub::class)->publish('plugin:order:payment', $order);
+                }
+
+                $this->catalogOrderService->update($order, ['system' => '']);
             }
 
             return $this->respondWithRedirect('/cart/done/' . $order->uuid);
